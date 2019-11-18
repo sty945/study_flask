@@ -2,9 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>$Title$</title>
+    <title>Title</title>
 </head>
 <body>
-$END$
+<form method="post">
+    {{ form.csrf_token }} <!-- 渲染CSRF令牌隐藏字段 -->
+    {{ form.username.lable }}<br>
+    {{ form.username() }}
+    {% for message in form.username.errors %}
+        <small class="error">{{ message }}</small><br>
+    {% endfor %}
+    {{ form.password.label }}<br>
+    {{ form.password }}
+    {% for message in form.password.errors %}
+        <small class="error">{{ message }}</small><br>
+    {% endfor %}
+    {{ form.remember }}{{ form.remember.label }}<br>
+    {{ form.submit }}<br>
+</form>
 </body>
 </html>

@@ -17,4 +17,4 @@ pipenv install python-dotenv
 配置环境的教程见下方：
 https://blog.csdn.net/sty945/article/details/99824909
 
-## 2 
+## 2 模板
