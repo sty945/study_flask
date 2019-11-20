@@ -16,7 +16,7 @@ from flask_ckeditor import  CKEditor, upload_success, upload_fail
 from flask_dropzone import Dropzone
 from flask_wtf.csrf import validate_csrf
 from wtforms import ValidationError
-from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm
+from forms import LoginForm, FortyTwoForm, UploadForm, MultiUploadForm, RichTextForm, NewPostForm, SigninForm, RegisterForm, SigninForm2, RegisterForm2
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'secret string')
@@ -144,5 +144,91 @@ def multi_upload():
         session['filenames'] = filenames
         return redirect(url_for('show_images'))
     return render_template('upload.html', form=form)
+
+
+@app.route('/ckeditor', methods=['GET', 'POST'])
+def integrate_ckeditor():
+    form = RichTextForm()
+    if form.validate_on_submit():
+        title = form.title.data
+        body = form.body.data
+        flash("Your post is published!")
+        return render_template('post.html', title=title, body=body)
+    return render_template('ckeditor.html', form=form)
+
+@app.route('/upload-ck', methods=['POST'])
+def upload_for_ckeditor():
+    f = request.files.get('upload')
+    if not allowed_file(f.filename):
+        return upload_fail('Image only!')
+    if not os.path.exists(app.config['UPLOAD_PATH']):
+        os.makedirs(app.config['UPLOAD_PATH'])
+    f.save(os.path.join(app.config['UPLOAD_PATH'], f.filename))
+    url = url_for('get_file', filename=f.filename)
+    return upload_success(url, f.filename)
+
+
+@app.route('/two_submits', methods=['GET', 'POST'])
+def two_submits():
+    form = NewPostForm()
+    if form.validate_on_submit():
+        if form.save.data:
+            flash('You click the "save" button.')
+        elif form.publish.data:
+            flash('You click the "publish" button')
+        return redirect(url_for("index"))
+    return render_template('2submit.html', form=form)
+
+
+@app.route('/multi_form', methods=['GET', 'POST'])
+def multi_form():
+    signin_form = SigninForm()
+    register_form = RegisterForm()
+    if signin_form.submit1.data and signin_form.validate():
+        username = signin_form.username.data
+        flash('%s, you just submit the Signin Form.' % username)
+        return redirect(url_for('index'))
+
+    if register_form.submit2.data and register_form.validate():
+        username = register_form.username.data
+        flash("%s, you just submit the Register Form." % username)
+        return redirect(url_for('index'))
+    return render_template('2form.html', signin_form=signin_form, register_form=register_form)
+
+
+@app.route('/multi_form_multi_view')
+def multi_form_multi_view():
+    signin_form = SigninForm2()
+    register_form = RegisterForm2()
+    return render_template('2form2view.html', signin_form=signin_form, register_form=register_form)
+
+
+@app.route('/handle_signin', methods=['POST'])
+def handle_signin():
+    signin_form = SigninForm2()
+    register_form = RegisterForm2()
+
+    if signin_form.validate_on_submit():
+        username = signin_form.username.data
+        flash('%s, you just submit the Signin Form.' % username)
+        return redirect(url_for('index'))
+
+    return render_template('2form2view.html', signin_form=signin_form, register_form=register_form)
+
+
+@app.route('/handle_register', methods=['POST'])
+def handle_register():
+    signin_form = SigninForm2()
+    register_form = RegisterForm2()
+
+    if register_form.validate_on_submit():
+        username = register_form.username.data
+        flash('%s, you just submit the Register Form.' % username)
+        return redirect(url_for('index'))
+    return render_template('2form2view.html', signin_form=signin_form, register_form=register_form)
+
+
+
+
 
 
