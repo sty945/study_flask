@@ -24,5 +24,6 @@ dev_db = prefix + os.path.join(os.path.dirname(app.root_path), 'data.db')
 SECRET_KEY = os.getenv('SECRET_KEY', 'secret string')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URI', dev_db)
+SECRET_KEY= os.getenv('SECRET_KEY', 'secret string')
 
-from . import views, errors, commands
+# from sayhello import views, errors, commands

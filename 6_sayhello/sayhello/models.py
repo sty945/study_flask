@@ -11,8 +11,7 @@
 
 from datetime import datetime
 
-from . import db
-
+from sayhello import db
 
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)

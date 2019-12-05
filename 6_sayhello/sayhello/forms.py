@@ -18,7 +18,7 @@ class HelloForm(FlaskForm):
     """
     问候表单
     """
-    name = StringField('name', validators=[DataRequired(), Length(1, 20)])
+    name = StringField('Name', validators=[DataRequired(), Length(1, 20)])
     body = TextAreaField('Message', validators=[DataRequired(), Length(1, 200)])
     submit = SubmitField()
 
